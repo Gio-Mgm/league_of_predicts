@@ -2,12 +2,12 @@ import mysql.connector
 from mysql.connector import Error
 import pandas as pd
 
-import sys
-sys.path.insert(0, '/home/apprenant/Documents/simplon_dev/python_sql/lol_api') # Change with your own project path
+# import sys
+# sys.path.insert(0, '/home/apprenant/Documents/simplon_dev/python_sql/lol_api') # Change with your own project path
 
-from src.config import USER, PASSWORD, DB_NAME # Build your own config file
+#from config import USER, PASSWORD, DB_NAME # Build your own config file
 
-CSV_PATH = '/home/apprenant/Documents/simplon_dev/python_sql/lol_api/Data/dataclear.csv'
+CSV_PATH = '../data/03_cleaned_data/cleaned_data.csv'
 df = pd.read_csv(CSV_PATH)
 df = df.drop('Unnamed: 0', axis=1)
 
