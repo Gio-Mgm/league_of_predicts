@@ -31,10 +31,8 @@ def extract_results():
 	reader = easyocr.Reader(['en']) # need to run only once to load model into memory
 	DIR = "../data/ocr"
 	results = {}
-	print(os.listdir(DIR))
 	for folder in os.listdir(DIR):
 		results[folder] = {}
-		print(os.listdir(os.path.join(DIR, folder)))
 		sub_path = os.path.join(DIR, folder)
 		for filename in os.listdir(sub_path):
 

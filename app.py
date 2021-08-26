@@ -7,8 +7,6 @@ from src.ocr.detection import extract_results
 state = st.session_state
 if 'pred_blue' not in state:
     state.pred_blue = None
-if 'is_hidden_form' not in state:
-    state.is_hidden_form = True
 
 # streamlit settings
 st.set_page_config(
@@ -29,7 +27,7 @@ def check_proba(curr_val, ref_ocr):
             st.warning(f'Veuillez vérifier manuellement cette valeur, {proba}% de certitude')
 
 
-def execute_v3(res_ocr=None):
+def execute_app(res_ocr):
     title = st.success("Bienvenue sur la V3")
     match = Match()
     if res_ocr:
@@ -102,7 +100,7 @@ res_ocr = ""
 im = st.file_uploader("Image")
 if im:
     img = Image.open(im)
-    st.image(img, use_column_width="auto")
+    st.image(img, width = 800)
     # imag = numpy.array(imag)  # Ce qu'on enverra a l'api pour l'ocr
     # print(type(imag))
     # st.write(type(imag))
@@ -129,25 +127,21 @@ if im:
     # end = time.time()
     # st.sidebar.write(f"Avec API : {end - start}s")
 
-    start = time.time()
+    # st.file_uploader() returns a memory image file
+    # so we need to save it locally for openCV
     temp_im = os.path.join("data/ocr",'temp_img.png')
     with open(temp_im, "wb") as f:
         f.write(im.getbuffer())
+
+    # image loading
     temp_img = Image.open(temp_im)
     crop_numericals(temp_img)
     res_ocr = extract_results()
-    state.is_hidden_form = True
-    end = time.time()
-    st.sidebar.write(f"Sans API: {end - start}s")
+    #state.is_hidden_form = True
 
 
 
     ###############################################################################
 
 st.title("Welcome to League of Predicts")
-pages = [f'V{i}' for i in range(1, 6)]
-page = st.sidebar.radio('Page', pages, index=2)
-if page == pages[2]:
-    state.is_hidden_form and execute_v3() or execute_v3(res_ocr)
-else:
-    st.error("Mauvais choix")
+execute_app(res_ocr)
