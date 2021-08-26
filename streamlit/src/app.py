@@ -1,6 +1,8 @@
 import streamlit as st
 from classes import Match, roles
-import matplotlib.pyplot as plt
+import requests
+from PIL import Image
+import numpy as np
 
 state = st.session_state
 if 'pred_blue' not in state:
@@ -19,7 +21,7 @@ def check_proba(curr_val, ref_ocr):
             st.warning(f'Veuillez vérifier manuellement cette valeur, {proba}% de certitude')
 
 
-def execute_v3():
+def execute_app():
     st.success("Bienvenue sur la V3")
     match = Match()
     with st.form("Données à entrer"):
@@ -56,10 +58,7 @@ def execute_v3():
         if submitted:
             if match.is_complete_match():
                 if match.is_valid_match():
-                    # x = [match.blue_team.golds, match.red_team.golds, match.timer,
-                    #      match.blue_team.score, match.red_team.score]
-                    # pred_blue = model.predict_proba([x])[0][0]
-                    pred_blue = 0.62
+                    pred_blue = requests.get('', json=team.list_attributes_values()).json
                     state.pred_blue = pred_blue
                 else:
                     st.error('Au moins un des KDA est incorrect, veuillez vérifier svp')
@@ -77,184 +76,10 @@ def execute_v3():
         st.button("Nouvelle recherche ?", on_click=update_pred)
 
 
-res_ocr = {
-    "time":
-    {
-        "time_sec":
-        [
-            "44",
-            99.99
-        ],
-        "time_min":
-        [
-            "31",
-            99.99
-        ]
-    },
-    "score":
-    {
-        "red_kills":
-        [
-            "28",
-            50.43
-        ],
-        "red_turrets":
-        [
-            "7",
-            99.99
-        ],
-        "blue_kills":
-        [
-            "19",
-            100.0
-        ],
-        "blue_turrets":
-        [
-            "2",
-            100.0
-        ]
-    },
-    "gold":
-    {
-        "red_golds":
-        [
-            "57.9k",
-            99.75
-        ],
-        "blue_golds":
-        [
-            "55.4k",
-            99.7
-        ]
-    },
-    "cs":
-    {
-        "blue_sup_cs":
-        [
-            "43",
-            100.0
-        ],
-        "red_mid_cs":
-        [
-            "250",
-            100.0
-        ],
-        "blue_mid_cs":
-        [
-            "272",
-            100.0
-        ],
-        "red_sup_cs":
-        [
-            "35",
-            100.0
-        ],
-        "red_top_cs":
-        [
-            "229",
-            100.0
-        ],
-        "blue_top_cs":
-        [
-            "176",
-            100.0
-        ],
-        "red_adc_cs":
-        [
-            "197",
-            99.96
-        ],
-        "red_jgl_cs":
-        [
-            "173",
-            100.0
-        ],
-        "blue_adc_cs":
-        [
-            "256",
-            100.0
-        ],
-        "blue_jgl_cs":
-        [
-            "214",
-            97.66
-        ]
-    },
-    "kda":
-    {
-        "blue_top_kda":
-        [
-            "1/12/3",
-            61.77
-        ],
-        "blue_jgl_kda":
-        [
-            "7/4/5",
-            99.56
-        ],
-        "red_sup_kda":
-        [
-            "0/6/9",
-            99.93
-        ],
-        "blue_mid_kda":
-        [
-            "4/4/4",
-            97.42
-        ],
-        "blue_adc_kda":
-        [
-            "6/4/8",
-            99.15
-        ],
-        "blue_sup_kda":
-        [
-            "1/4/14",
-            49.69
-        ],
-        "red_jgl_kda":
-        [
-            "7/3/9",
-            100.0
-        ],
-        "red_adc_kda":
-        [
-            "4/6/3",
-            99.78
-        ],
-        "red_mid_kda":
-        [
-            "5/3/7",
-            99.97
-        ],
-        "red_top_kda":
-        [
-            "12/1/5",
-            99.68
-        ]
-    }
-}
-
-import cv2
-from PIL import Image
-import numpy
-# image = cv2.imread(file_path)
-imagee = st.file_uploader("Image")
+st.title("Welcome to League of Predicts")
+imagee = st.file_uploader("Entrez l'image de la partie à analyser")
 if imagee:
     imag = Image.open(imagee)
-    # imag
     st.image(imag, width=250)
-    # imag = numpy.array(imag)  # Ce qu'on enverra a l'api pour l'ocr
-    # print(type(imag))
-    # st.write(type(imag))
-    # imag
-    # st.image(imag, width=250)
-
-
-st.title("Welcome to League of Predicts")
-pages = [f'V{i}' for i in range(1, 6)]
-page = st.sidebar.radio('Page', pages, index=2)
-if page == pages[2]:
-    execute_v3()
-else:
-    st.error("Mauvais choix")
+    res_ocr = requests.get('', json=np.array(imag)).json
+    execute_app()
