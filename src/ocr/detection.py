@@ -32,18 +32,19 @@ def extract_results():
 	DIR = "../data/ocr"
 	results = {}
 	for folder in os.listdir(DIR):
-		results[folder] = {}
-		sub_path = os.path.join(DIR, folder)
-		for filename in os.listdir(sub_path):
+		if os.path.isdir(os.path.join(DIR, folder)):
+			results[folder] = {}
+			sub_path = os.path.join(DIR, folder)
+			for filename in os.listdir(sub_path):
 
-			file_path = os.path.join(DIR, folder, filename)
-			image = cv2.imread(file_path)
-			data = reader.readtext(preprocess_image(image), detail=1)
-			if not data:
-				data = "missing_value"
-			else:
-				result = data[0][1]
-				proba = data[0][2]
-				#image = cv2.imread(file_path)
-				results[folder][filename[:-4]] = [result, round(proba*100, 2)]
+				file_path = os.path.join(DIR, folder, filename)
+				image = cv2.imread(file_path)
+				data = reader.readtext(preprocess_image(image), detail=1)
+				if not data:
+					data = "missing_value"
+				else:
+					result = data[0][1]
+					proba = data[0][2]
+					#image = cv2.imread(file_path)
+					results[folder][filename[:-4]] = [result, round(proba*100, 2)]
 	return results

@@ -38,7 +38,7 @@ if im:
 
     # st.file_uploader() returns a memory image file
     # so we need to save it locally for openCV
-    temp_im = os.path.join("data/ocr",'temp_img.png')
+    temp_im = 'temp_img'
     with open(temp_im, "wb") as f:
         f.write(im.getbuffer())
 
@@ -66,7 +66,11 @@ if res_ocr:
         columns = [[blue, 'blue'], [red, 'red']]
         for column in columns:
             with column[0]:
-                st.subheader(f"{column[1]}_team")
+                if column[1] == 'blue':
+                    st.subheader("Blue Team")
+                else:
+                    st.subheader("Red Team")
+                    
                 st.markdown("--------")
                 team = getattr(match, f'{column[1]}_team')
                 team.set_attr('towers', st.text_input(
@@ -128,9 +132,9 @@ if res_ocr:
                 st.error('Remplissez correctement tous les champs svp')
     if state.pred_blue:
         if state.pred_blue >= 0.5:
-            st.info(f"L'équipe bleue est en train de gagner.\n"
+            st.sidebar.info(f"L'équipe bleue est en train de gagner.\n"
                     f"La probabilité de victoire est de {state.pred_blue * 100}%.")
         else:
-            st.error(f"L'équipe rouge est en train de gagner."
+            st.sidebar.error(f"L'équipe rouge est en train de gagner."
                         f"La probabilité de victoire de l'équipe rouge est de {(1 - state.pred_blue) * 100}%.")
         st.button("Nouvelle recherche ?", on_click=update_pred)

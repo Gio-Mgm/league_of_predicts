@@ -132,17 +132,19 @@ async def predict_who_win(match):
     """
         Predict who_win with probabilities
     """
-    data_picture = [match.timer, match.blue_team_towers, match.red_team_towers, match.blue_team_golds, match.red_team_golds,
-                    match.blue_team_top_kills, match.blue_team_top_deaths, match.blue_team_top_assists,
-                    match.blue_team_jgl_kills, match.blue_team_jgl_deaths, match.blue_team_jgl_assists,
-                    match.blue_team_mid_kills, match.blue_team_mid_deaths, match.blue_team_mid_assists,
-                    match.blue_team_adc_kills, match.blue_team_adc_deaths, match.blue_team_adc_assists,
-                    match.blue_team_sup_kills, match.blue_team_sup_deaths, match.blue_team_sup_assists,
-                    match.red_team_top_kills, match.red_team_top_deaths, match.red_team_top_assists,
-                    match.red_team_jgl_kills, match.red_team_jgl_deaths, match.red_team_jgl_assists,
-                    match.red_team_mid_kills, match.red_team_mid_deaths, match.red_team_mid_assists,
-                    match.red_team_adc_kills, match.red_team_adc_deaths, match.red_team_adc_assists,
-                    match.red_team_sup_kills, match.red_team_sup_deaths, match.red_team_sup_assists]
+    data_picture = [
+        match.timer, match.blue_team_towers, match.red_team_towers, match.blue_team_golds, match.red_team_golds,
+        match.blue_team_top_kills, match.blue_team_top_deaths, match.blue_team_top_assists,
+        match.blue_team_jgl_kills, match.blue_team_jgl_deaths, match.blue_team_jgl_assists,
+        match.blue_team_mid_kills, match.blue_team_mid_deaths, match.blue_team_mid_assists,
+        match.blue_team_adc_kills, match.blue_team_adc_deaths, match.blue_team_adc_assists,
+        match.blue_team_sup_kills, match.blue_team_sup_deaths, match.blue_team_sup_assists,
+        match.red_team_top_kills, match.red_team_top_deaths, match.red_team_top_assists,
+        match.red_team_jgl_kills, match.red_team_jgl_deaths, match.red_team_jgl_assists,
+        match.red_team_mid_kills, match.red_team_mid_deaths, match.red_team_mid_assists,
+        match.red_team_adc_kills, match.red_team_adc_deaths, match.red_team_adc_assists,
+        match.red_team_sup_kills, match.red_team_sup_deaths, match.red_team_sup_assists
+    ]
                     
     classifier = joblib.load(open(filename, 'rb'))
     predictions = classifier.predict([data_picture])
