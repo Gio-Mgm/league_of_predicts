@@ -142,5 +142,10 @@ if res_ocr:
                     f"La probabilité de victoire est de {state.pred_blue * 100}%.")
         else:
             st.sidebar.error(f"L'équipe rouge est en train de gagner."
-                        f"La probabilité de victoire de l'équipe rouge est de {(1 - state.pred_blue) * 100}%.")
+                        f"La     probabilité de victoire de l'équipe rouge est de {(1 - state.pred_blue) * 100}%.")
+        blue_col, red_col = st.columns([state.pred_blue, 1-state.pred_blue])
+        with blue_col:
+            st.info('')
+        with red_col:
+            st.error('')
         st.button("Nouvelle recherche ?", on_click=update_pred)
