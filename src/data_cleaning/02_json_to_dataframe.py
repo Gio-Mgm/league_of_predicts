@@ -1,3 +1,8 @@
+#!/usr/bin/env python
+
+#Descrition
+"""Transform data Json into usable dataframe"""
+
 #Import
 import json
 import pandas as pd
@@ -5,32 +10,44 @@ import numpy as np
 import os
 import timeit
 
+#Paternity
+__author__ = "Dewynter Antoine"
+__copyright__ = "Copyright 2021, League_of_Predict"
+__credits__ = ["DEWYNTER Antoine", "MALGHEM Giovanny", "BILLET Kevin","MEYER Tanguy","FAYEULLE Michael"]
+__license__ = "Open_source"
+__version__ = "1"
+__maintainer__ = "Dewynter Antoine"
+__email__ = "Dewynter.cyber@outlook.fr"
+__status__ = "Developement"
+
 start = timeit.default_timer()
 
-folder = os.listdir("data/02transform_data/global")
+
+folder = os.listdir("data/02_intermediate/global")
 dataclear = pd.DataFrame()
 cpt = 0
 
-if not os.path.exists("/data/02transform_data/select_data_match"):
-    os.makedirs("/data/02transform_data/select_data_match")
+if not os.path.exists("/data/02_intermediate/select_data_match"):
+    os.makedirs("/data/02_intermediate/select_data_match")
 
 for filename in folder :
     try:
-        #Visual intication
+        #Visual indication
         cpt +=1
         matchid = filename.strip("global_.json")
         stop = timeit.default_timer()
-        if cpt % 100 == 1 :
+        if cpt % 5000 == 1 :
             print(cpt,"/",len(folder))
             print('Time: ', round(((stop - start)/60),2)) 
             print('\n')
 
-        #Import Data
-        with open(f'./data/02transform_data/global/global_{matchid}.json') as matchglobal:
+        #Import data
+        with open(f'./data/02_intermediate/global/global_{matchid}.json') as matchglobal:
             matchglobal = json.load(matchglobal)
-        with open(f'./data/02transform_data/timeline/timeline_{matchid}.json') as matchtimeline:
+        with open(f'./data/02_intermediate/timeline/timeline_{matchid}.json') as matchtimeline:
             matchtimeline = json.load(matchtimeline)
 
+        #Setup dataframe
         COLUMN_NAMES = ["match_ID","timeline","who_win",
                 "blue_kill_nashor","blue_kill_herald","blue_kill_fire_drake","blue_kill_air_drake","blue_kill_water_drake","blue_kill_earth_drake","blue_kill_ancient_drake","blue_soul_drake","blue_destr_tower","blue_gold",
                 "red_kill_nashor","red_kill_herald","red_kill_fire_drake","red_kill_air_drake","red_kill_water_drake","red_kill_earth_drake","red_kill_ancient_drake","red_soul_drake","red_destr_tower","red_gold",
@@ -46,9 +63,9 @@ for filename in folder :
                 "champion_10","level_10","gold_10","kill_10","death_10","assist_10","item1_10","item2_10","item3_10","item4_10","item5_10","item6_10","trinket_10","sbireskill_10","jungsbirekill_10"]
         df = pd.DataFrame(columns=COLUMN_NAMES)
 
+        #Collect Team Data
         for i in range (len(matchtimeline["frames"])):
             df.loc[i] = [0,i]+list([0]*171)
-
 
         df["match_ID"] = matchglobal["gameId"]
 
@@ -65,6 +82,7 @@ for filename in folder :
         
         blueteam = [1,2,3,4,5]
 
+        #Collect Player Data
         for frame in range(0,len(matchtimeline["frames"]),1):
 
             for participant in range(1,11,1):
@@ -284,14 +302,21 @@ for filename in folder :
                             find_item_slot = i
                             df.loc[frame,f'{"item" + str(find_item_slot)+ "_" + str(participantID)}'] = matchtimeline["frames"][frame]["events"][event]["afterId"]
 
-
-        df.to_csv(f"./data/02transform_data/select_data_match/{matchid}.csv")
+        #Save data
+        df.to_csv(f"./data/02_intermediate/select_data_match/{matchid}.csv")
         stop = timeit.default_timer()
 
     except Exception as e:
+        #Create and fill logerror
+        if not os.path.exists("src/data_cleaning/error_file02.txt"):
+            error_list  = open("src/data_cleaning/error_file02.txt", "a+")
+            error_list.close()
         print("Match",matchid, "non conforme")
-        print (e)
+        error_list = open("src/data_cleaning/error_file02.txt","a+")
+        error_list.write(matchid)
+        error_list.write(e)
+        error_list.write("\n")
+        error_list.close()
         
 stop = timeit.default_timer()
-
 print('Time: ', stop - start) 
