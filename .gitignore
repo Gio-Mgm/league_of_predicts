@@ -1,4 +1,8 @@
 env
-/data
+/data/**/*.csv
+/data/**/*.json
+/data/**/*.zip
 **/_*
+/data/ocr
 .idea
+temp_img
