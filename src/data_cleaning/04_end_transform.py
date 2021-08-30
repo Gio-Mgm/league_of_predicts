@@ -1,6 +1,23 @@
+#!/usr/bin/env python
+
+#Descrition
+"""Use multiple colum for create additional coherent data"""
+
+#Import
 import pandas as pd 
 
-dfmatch = pd.read_csv(f"data/02transform_data/dataclear.csv",index_col=0) 
+#Paternity
+__author__ = "Dewynter Antoine"
+__copyright__ = "Copyright 2021, League_of_Predict"
+__credits__ = ["DEWYNTER Antoine", "MALGHEM Giovanny", "BILLET Kevin","MEYER Tanguy","FAYEULLE Michael"]
+__license__ = "Open_source"
+__version__ = "1"
+__maintainer__ = "Dewynter Antoine"
+__email__ = "Dewynter.cyber@outlook.fr"
+__status__ = "Developement"
+
+#Import Data
+dfmatch = pd.read_csv(f"data/02_intermediate/dataclear.csv",index_col=0) 
 number_of_champ = 10
 
 def get_total_sbire_by_champ(df,number_of_champ):
@@ -28,4 +45,5 @@ def get_total_item_score_by_champ(df,number_of_champ):
 dfmatch = get_total_sbire_by_champ(dfmatch,number_of_champ)
 dfmatch = get_total_item_score_by_champ(dfmatch,number_of_champ)
 
-dfmatch.to_csv("data/03cleaned_data/cleaned_data.csv")
+#Save data
+dfmatch.to_csv("data/03_cleaned_data/cleaned_data.csv")

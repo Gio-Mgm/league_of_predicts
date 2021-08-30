@@ -1,14 +1,30 @@
+#!/usr/bin/env python
+
+#Descrition
+"""Remove unvalid data file from request"""
+
+#Import
 import os
 import json
 from distutils.dir_util import copy_tree
 
+#Paternity
+__author__ = "Dewynter Antoine"
+__copyright__ = "Copyright 2021, League_of_Predict"
+__credits__ = ["DEWYNTER Antoine", "MALGHEM Giovanny", "BILLET Kevin","MEYER Tanguy","FAYEULLE Michael"]
+__license__ = "Open_source"
+__version__ = "1"
+__maintainer__ = "Dewynter Antoine"
+__email__ = "Dewynter.cyber@outlook.fr"
+__status__ = "Developement"
+
 #Copy subdirectory 
-fromDirectory = "data/01row_data"
-toDirectory = "data/02transform_data"
+fromDirectory = "data/01_row"
+toDirectory = "data/02_intermediate"
 
 copy_tree(fromDirectory, toDirectory)
 
-folders = ["data/02transform_data/global", "data/02transform_data/timeline/"]
+folders = ["data/02_intermediate/global/", "data/02_intermediate/timeline/"]
 
 #Check folders size
 print("Initial Quantity of File")
