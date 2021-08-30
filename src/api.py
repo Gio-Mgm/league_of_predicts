@@ -11,17 +11,20 @@
 #       IMPORTS        #
 ########################
 
-from fastapi import FastAPI, File, UploadFile
+from fastapi import FastAPI, Request
 
 import joblib
 import sys
 import os
 import numpy as np
+
+from streamlit.classes import Match
 sys.path.append('../src')
 from ocr.cropping import crop_numericals
 from ocr.detection import extract_results
 import pandas as pd
 import pickle5 as pickle
+import xgboost
 #from database import Database
 from PIL import Image
 from config import USER, PASSWORD # Build your own config file
@@ -30,7 +33,7 @@ app = FastAPI()
 
 # Connect to SQL
 DB_NAME = 'lol_db'
-filename = '/home/apprenant/Documents/simplon_dev/python_sql/lol_api/regression_logistique'
+filename = '../models/regression_logistique'
 
 ########################
 #      API ROUTES      #
@@ -116,24 +119,25 @@ async def get_predictions(blue_gold :int, red_gold :int, timeline :int, blue_kil
 
 
 @app.post('/predict/')
-async def predict_who_win(match):
+async def predict_who_win(request: Request):
     """
         Predict who_win with probabilities
     """
+    match = await request.json()
     data_picture = [
-        match.timer, match.blue_team_towers, match.red_team_towers, match.blue_team_golds, match.red_team_golds,
-        match.blue_team_top_kills, match.blue_team_top_deaths, match.blue_team_top_assists,
-        match.blue_team_jgl_kills, match.blue_team_jgl_deaths, match.blue_team_jgl_assists,
-        match.blue_team_mid_kills, match.blue_team_mid_deaths, match.blue_team_mid_assists,
-        match.blue_team_adc_kills, match.blue_team_adc_deaths, match.blue_team_adc_assists,
-        match.blue_team_sup_kills, match.blue_team_sup_deaths, match.blue_team_sup_assists,
-        match.red_team_top_kills, match.red_team_top_deaths, match.red_team_top_assists,
-        match.red_team_jgl_kills, match.red_team_jgl_deaths, match.red_team_jgl_assists,
-        match.red_team_mid_kills, match.red_team_mid_deaths, match.red_team_mid_assists,
-        match.red_team_adc_kills, match.red_team_adc_deaths, match.red_team_adc_assists,
-        match.red_team_sup_kills, match.red_team_sup_deaths, match.red_team_sup_assists
+        match["timer"], match["blue_team_towers"], match["red_team_towers"], match["blue_team_golds"], match["red_team_golds"],
+        match["blue_team_top_kills"], match["blue_team_top_deaths"], match["blue_team_top_assists"],
+        match["blue_team_jgl_kills"], match["blue_team_jgl_deaths"], match["blue_team_jgl_assists"],
+        match["blue_team_mid_kills"], match["blue_team_mid_deaths"], match["blue_team_mid_assists"],
+        match["blue_team_adc_kills"], match["blue_team_adc_deaths"], match["blue_team_adc_assists"],
+        match["blue_team_sup_kills"], match["blue_team_sup_deaths"], match["blue_team_sup_assists"],
+        match["red_team_top_kills"], match["red_team_top_deaths"], match["red_team_top_assists"],
+        match["red_team_jgl_kills"], match["red_team_jgl_deaths"], match["red_team_jgl_assists"],
+        match["red_team_mid_kills"], match["red_team_mid_deaths"], match["red_team_mid_assists"],
+        match["red_team_adc_kills"], match["red_team_adc_deaths"], match["red_team_adc_assists"],
+        match["red_team_sup_kills"], match["red_team_sup_deaths"], match["red_team_sup_assists"],
     ]
-                    
+              
     classifier = joblib.load(open(filename, 'rb'))
     predictions = classifier.predict([data_picture])
     predictions_proba = classifier.predict_proba([data_picture])

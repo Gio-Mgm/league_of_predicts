@@ -51,6 +51,7 @@ if im:
 st.title("Welcome to League of Predicts")
 
 match = Match()
+container = st.container()
 if res_ocr:
     with st.form("Données à entrer"):
         blue, img_col, red = st.columns([.15, .7, .15])
@@ -127,10 +128,12 @@ if res_ocr:
                     # pred_blue = 0.62
                     # state.pred_blue = pred_blue
                     res = requests.post(
-                        API_PATH + '/predict/', data=match
+                        API_PATH + '/predict/', json=match.list_attributes_values()
                     )
+
                     st.write(res, res.text)
-                    state.pred_blue = res["Blue_win"]
+                    r = res.json()
+                    state.pred_blue = r["Blue_Win"]["Probabilities"]
                 else:
                     st.error(
                         'Au moins un des KDA est incorrect, veuillez vérifier svp')
@@ -138,14 +141,16 @@ if res_ocr:
                 st.error('Remplissez correctement tous les champs svp')
     if state.pred_blue:
         if state.pred_blue >= 0.5:
-            st.sidebar.info(f"L'équipe bleue est en train de gagner.\n"
-                    f"La probabilité de victoire est de {state.pred_blue * 100}%.")
+            container.markdown(
+                "_L'équipe bleue à de plus grandes chances de victoire._"
+            )
         else:
-            st.sidebar.error(f"L'équipe rouge est en train de gagner."
-                        f"La     probabilité de victoire de l'équipe rouge est de {(1 - state.pred_blue) * 100}%.")
-        blue_col, red_col = st.columns([state.pred_blue, 1-state.pred_blue])
+            container.header(
+                "_L'équipe rouge à de plus grandes chances de victoire._"
+                )
+        blue_col, red_col = container.columns([state.pred_blue, 1-state.pred_blue])
         with blue_col:
-            st.info('')
+            st.info(f"{round(state.pred_blue * 100, 2)} %")
         with red_col:
-            st.error('')
+            st.error(f"{100 - round(state.pred_blue * 100, 2)} %")
         st.button("Nouvelle recherche ?", on_click=update_pred)

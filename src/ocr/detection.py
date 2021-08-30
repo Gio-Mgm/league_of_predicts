@@ -47,4 +47,5 @@ def extract_results():
 					result = data[0][1]
 					proba = round(data[0][2]*100,2)
 				results[folder][filename[:-4]] = [result, proba]
+	print(results)
 	return results

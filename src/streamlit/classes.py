@@ -62,7 +62,7 @@ class Base():
 
     def list_attributes_values(self, dict_all={}, parent=''):
         for attribute, value in self.__dict__.items():
-            if str(value).startswith('<__main__.'):
+            if str("object") in str(value):
                 dict_all.update(value.list_attributes_values(dict_all, parent=parent + '_' + attribute))
             else:
                 dict_all.update({(parent + '_' + attribute)[1:]: value})
