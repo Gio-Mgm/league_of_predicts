@@ -45,6 +45,5 @@ def extract_results():
 				else:
 					result = data[0][1]
 					proba = data[0][2]
-					#image = cv2.imread(file_path)
 					results[folder][filename[:-4]] = [result, round(proba*100, 2)]
 	return results
