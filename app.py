@@ -1,4 +1,5 @@
 import os
+import requests
 import streamlit as st
 import matplotlib.pyplot as plt
 from PIL import Image
@@ -123,8 +124,13 @@ if res_ocr:
                     # x = [match.blue_team.golds, match.red_team.golds, match.timer,
                     #      match.blue_team.score, match.red_team.score]
                     # pred_blue = model.predict_proba([x])[0][0]
-                    pred_blue = 0.62
-                    state.pred_blue = pred_blue
+                    # pred_blue = 0.62
+                    # state.pred_blue = pred_blue
+                    res = requests.post(
+                        API_PATH + '/predict/', data=match
+                    )
+                    st.write(res, res.text)
+                    state.pred_blue = res["Blue_win"]
                 else:
                     st.error(
                         'Au moins un des KDA est incorrect, veuillez vérifier svp')

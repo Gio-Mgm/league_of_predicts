@@ -5,7 +5,7 @@ import re
 roles = ['adc', 'jgl', 'mid', 'sup', 'top']
 
 
-class Base:
+class Base():
 
     @staticmethod
     def convert_kda(kda):

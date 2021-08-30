@@ -22,7 +22,7 @@ from ocr.cropping import crop_numericals
 from ocr.detection import extract_results
 import pandas as pd
 import pickle5 as pickle
-from database import Database
+#from database import Database
 from PIL import Image
 from config import USER, PASSWORD # Build your own config file
 
@@ -115,19 +115,7 @@ async def get_predictions(blue_gold :int, red_gold :int, timeline :int, blue_kil
     return data
 
 
-@app.post('/upload_image/')
-async def upload_image(data):
-    """
-        Upload image
-    """
-    # print(data)
-    # with open('temp_img', "wb") as f:
-    #     f.write(data.image.getbuffer())
-    #data['image'].save("temp_img.png")
-    crop_numericals(data["image"])
-    return {"res": extract_results()}
-
-@app.post('/predict/}')
+@app.post('/predict/')
 async def predict_who_win(match):
     """
         Predict who_win with probabilities
@@ -155,10 +143,10 @@ async def predict_who_win(match):
 
     labels = ["Lose","Win"]
     data_predict = {
-        'Blue Win' : {
+        'Blue_Win' : {
             'Probabilities' : predictions_proba[0][1]
         },
-        'Blue lose' : {
+        'Blue_lose' : {
             'Probabilities' : predictions_proba[0][0]
         },
         'Prediction' : labels[predictions[0]]
