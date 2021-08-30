@@ -41,9 +41,10 @@ def extract_results():
 				image = cv2.imread(file_path)
 				data = reader.readtext(preprocess_image(image), detail=1)
 				if not data:
-					data = "missing_value"
+					result = "missing_value"
+					proba = "missing_value"
 				else:
 					result = data[0][1]
-					proba = data[0][2]
-					results[folder][filename[:-4]] = [result, round(proba*100, 2)]
+					proba = round(data[0][2]*100,2)
+				results[folder][filename[:-4]] = [result, proba]
 	return results

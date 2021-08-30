@@ -41,16 +41,11 @@ def crop_numericals(im):
 		os.mkdir("./data")
 	if not os.path.exists("./data/ocr"):
 		os.mkdir("./data/ocr")
-	if not os.path.exists("./data/ocr/gold"):
-		os.mkdir("./data/ocr/gold")
-	if not os.path.exists("./data/ocr/score"):
-		os.mkdir("./data/ocr/score")
-	if not os.path.exists("./data/ocr/kda"):
-		os.mkdir("./data/ocr/kda")
-	if not os.path.exists("./data/ocr/cs"):
-		os.mkdir("./data/ocr/cs")
-	if not os.path.exists("./data/ocr/time"):
-		os.mkdir("./data/ocr/time")
+
+	folders = ["gold", "score", "kda", "cs", "time"]
+	for f in folders:
+		if not os.path.exists(f"./data/ocr/{f}"):
+			os.mkdir(f"./data/ocr/{f}")
 
 	crop_image(im, .49,   .073,  .012,  .02,  "time/time_min")
 	crop_image(im, .503,  .073,  .012,  .02,  "time/time_sec")
