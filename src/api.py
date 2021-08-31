@@ -153,6 +153,5 @@ async def predict_who_win(request: Request):
         'Prediction' : labels[predictions[0]]
 
     }
-    print(data_predict)
 
     return data_predict

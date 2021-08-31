@@ -2,7 +2,7 @@ import streamlit as st
 import inspect
 import re
 
-roles = ['adc', 'jgl', 'mid', 'sup', 'top']
+roles = ['top', 'jgl', 'mid', 'adc', 'sup']
 
 
 class Base():

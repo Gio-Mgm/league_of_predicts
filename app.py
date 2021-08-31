@@ -122,11 +122,6 @@ if im:
         if submitted:
             if match.is_complete_match():
                 if match.is_valid_match():
-                    # x = [match.blue_team.golds, match.red_team.golds, match.timer,
-                    #      match.blue_team.score, match.red_team.score]
-                    # pred_blue = model.predict_proba([x])[0][0]
-                    # pred_blue = 0.62
-                    # state.pred_blue = pred_blue
                     res = requests.post(
                         API_PATH + '/predict/', json=match.list_attributes_values()
                     )
