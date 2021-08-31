@@ -29,7 +29,7 @@ def preprocess_image(image):
 def extract_results():
 	"""Extract results from ocr"""
 	reader = easyocr.Reader(['en']) # need to run only once to load model into memory
-	DIR = "../data/ocr"
+	DIR = "./data/ocr"
 	results = {}
 	for folder in os.listdir(DIR):
 		if os.path.isdir(os.path.join(DIR, folder)):
@@ -47,5 +47,4 @@ def extract_results():
 					result = data[0][1]
 					proba = round(data[0][2]*100,2)
 				results[folder][filename[:-4]] = [result, proba]
-	print(results)
 	return results

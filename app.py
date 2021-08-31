@@ -15,6 +15,7 @@ if 'pred_blue' not in state:
 st.set_page_config(
     page_title="League Of Predicts",
     layout='wide',
+    page_icon='lop_icon.png',
     initial_sidebar_state='expanded'
 )
 
@@ -33,13 +34,14 @@ def check_proba(curr_val, ref_ocr):
 API_PATH = "http://127.0.0.1:8000"
 
 res_ocr = ""
+st.sidebar.image("lop_icon.png")
 im = st.sidebar.file_uploader("Upload a screenshot")
 if im:
-    img = Image.open(im)
+    
 
     # st.file_uploader() returns a memory image file
     # so we need to save it locally for openCV
-    temp_im = 'temp_img'
+    temp_im = 'temp_img.png'
     with open(temp_im, "wb") as f:
         f.write(im.getbuffer())
 
@@ -48,11 +50,8 @@ if im:
     crop_numericals(temp_img)
     res_ocr = extract_results()
 
-st.title("Welcome to League of Predicts")
-
-match = Match()
-container = st.container()
-if res_ocr:
+    match = Match()
+    container = st.container()
     with st.form("Données à entrer"):
         blue, img_col, red = st.columns([.15, .7, .15])
         with img_col:
@@ -117,6 +116,7 @@ if res_ocr:
                     )
 
         with img_col:
+            img = Image.open(im)
             st.image(img, use_column_width="always")
             submitted = st.form_submit_button("Submit")
         if submitted:
@@ -130,8 +130,6 @@ if res_ocr:
                     res = requests.post(
                         API_PATH + '/predict/', json=match.list_attributes_values()
                     )
-
-                    st.write(res, res.text)
                     r = res.json()
                     state.pred_blue = r["Blue_Win"]["Probabilities"]
                 else:

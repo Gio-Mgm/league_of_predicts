@@ -142,9 +142,6 @@ async def predict_who_win(request: Request):
     predictions = classifier.predict([data_picture])
     predictions_proba = classifier.predict_proba([data_picture])
 
-    print(predictions)
-    print(predictions_proba)
-
     labels = ["Lose","Win"]
     data_predict = {
         'Blue_Win' : {
@@ -156,5 +153,6 @@ async def predict_who_win(request: Request):
         'Prediction' : labels[predictions[0]]
 
     }
+    print(data_predict)
 
     return data_predict
