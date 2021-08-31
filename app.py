@@ -19,6 +19,7 @@ st.set_page_config(
     initial_sidebar_state='expanded'
 )
 
+
 def update_pred():
     state.pred_blue = None
 
@@ -37,7 +38,6 @@ res_ocr = ""
 st.sidebar.image("lop_icon.png")
 im = st.sidebar.file_uploader("Upload a screenshot")
 if im:
-    
 
     # st.file_uploader() returns a memory image file
     # so we need to save it locally for openCV
@@ -53,8 +53,30 @@ if im:
     match = Match()
     container = st.container()
     with st.form("Données à entrer"):
-        blue, img_col, red = st.columns([.15, .7, .15])
-        with img_col:
+        col1, col2, col3, col4, col5, col6, col7 = st.columns(7)
+        with col1:
+            st.subheader("Blue Team")
+            st.markdown("--------")
+        with col2:
+            team = getattr(match, 'blue_team')
+            team.set_attr('towers', st.text_input(
+                f"Tours détruites",
+                help=f"Nombre entier entre 1 et 11 inclus",
+                key='blue_turrets',
+                value=res_ocr['score']['blue_turrets'][0],
+            ))
+            check_proba(
+                team.towers, res_ocr['score']['blue_turrets'])
+        with col3:
+            team.set_attr('golds', st.text_input(
+                f"Golds",
+                help="Exemple: 21.3k",
+                key='blue_golds',
+                value=res_ocr['gold']['blue_golds'][0]
+            ))
+            check_proba(
+                team.golds, res_ocr['gold']['blue_golds'])
+        with col4:
             match.set_attr('timer', st.text_input(
                 "Timer",
                 help="En minutes: 11 ou 11:20",
@@ -64,34 +86,32 @@ if im:
             check_proba(
                 str(match.timer).split('.'), res_ocr['time']['time_min']
             )
+        with col5:
+            team.set_attr('golds', st.text_input(
+                f"Golds",
+                help="Exemple: 21.3k",
+                key='red_golds',
+                value=res_ocr['gold']['red_golds'][0]
+            ))
+            check_proba(
+                team.golds, res_ocr['gold']['red_golds'])
+        with col6:
+            team = getattr(match, 'blue_team')
+            team.set_attr('towers', st.text_input(
+                f"Tours détruites",
+                help=f"Nombre entier entre 1 et 11 inclus",
+                key='red_turrets',
+                value=res_ocr['score']['red_turrets'][0],
+            ))
+            check_proba(
+                team.towers, res_ocr['score']['red_turrets'])
+        with col7:
+            st.subheader("Red Team")
+            st.markdown("--------")
+        blue, img_col, red = st.columns([.15, .7, .15])
         columns = [[blue, 'blue'], [red, 'red']]
         for column in columns:
             with column[0]:
-                if column[1] == 'blue':
-                    st.subheader("Blue Team")
-                else:
-                    st.subheader("Red Team")
-                    
-                st.markdown("--------")
-                team = getattr(match, f'{column[1]}_team')
-                team.set_attr('towers', st.text_input(
-                    f"Tours détruites",
-                    help=f"Nombre entier entre 1 et 11 inclus",
-                    key=f'{column[1]}_turrets',
-                    value=res_ocr['score'][f'{column[1]}_turrets'][0], 
-                ))
-                check_proba(
-                    team.towers, res_ocr['score'][f'{column[1]}_turrets'])
-
-                team.set_attr('golds', st.text_input(
-                    f"Golds",
-                    help="Exemple: 21.3k",
-                    key=f'{column[1]}_golds',
-                    value=res_ocr['gold'][f'{column[1]}_golds'][0]
-                ))
-                check_proba(
-                    team.golds, res_ocr['gold'][f'{column[1]}_golds'])
-
                 for role in roles:
                     champ = getattr(team, role)
                     champ.set_attr('kda', st.text_input(
@@ -140,12 +160,12 @@ if im:
         else:
             container.markdown(
                 "## _L'équipe rouge à de plus grandes chances de victoire._"
-                )
+            )
 
         size = state.pred_blue > 0.895 and [0.895, 0.105] \
             or state.pred_blue < 0.105 and [0.105, 0.895] \
             or [state.pred_blue, 1-state.pred_blue]
-        
+
         blue_col, red_col = container.columns(size)
         with blue_col:
             st.info(f"# _{round(state.pred_blue * 100, 2)} %_")
