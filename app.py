@@ -126,7 +126,7 @@ if im:
                         API_PATH + '/predict/', json=match.list_attributes_values()
                     )
                     r = res.json()
-                    state.pred_blue = r["Blue_Win"]["Probabilities"]
+                    state.pred_blue = r["Blue_Win"]
                 else:
                     st.error(
                         'Au moins un des KDA est incorrect, veuillez vérifier svp')
@@ -143,7 +143,7 @@ if im:
                 )
         blue_col, red_col = container.columns([state.pred_blue, 1-state.pred_blue])
         with blue_col:
-            st.info(f"{round(state.pred_blue * 100, 2)} %")
+            st.info(f"# _{round(state.pred_blue * 100, 2)} %_")
         with red_col:
-            st.error(f"{100 - round(state.pred_blue * 100, 2)} %")
+            st.error(f"# _{100 - round(state.pred_blue * 100, 2)} %_")
         st.button("Nouvelle recherche ?", on_click=update_pred)
