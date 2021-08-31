@@ -57,8 +57,8 @@ if im:
         with col1:
             st.subheader("Blue Team")
             st.markdown("--------")
+        team = getattr(match, 'blue_team')
         with col2:
-            team = getattr(match, 'blue_team')
             team.set_attr('towers', st.text_input(
                 f"Tours détruites",
                 help=f"Nombre entier entre 1 et 11 inclus",
@@ -87,6 +87,7 @@ if im:
                 str(match.timer).split('.'), res_ocr['time']['time_min']
             )
         with col5:
+            team = getattr(match, 'red_team')
             team.set_attr('golds', st.text_input(
                 f"Golds",
                 help="Exemple: 21.3k",
@@ -96,7 +97,6 @@ if im:
             check_proba(
                 team.golds, res_ocr['gold']['red_golds'])
         with col6:
-            team = getattr(match, 'blue_team')
             team.set_attr('towers', st.text_input(
                 f"Tours détruites",
                 help=f"Nombre entier entre 1 et 11 inclus",
@@ -111,6 +111,7 @@ if im:
         blue, img_col, red = st.columns([.15, .7, .15])
         columns = [[blue, 'blue'], [red, 'red']]
         for column in columns:
+            team = getattr(match, f'{column[1]}_team')
             with column[0]:
                 for role in roles:
                     champ = getattr(team, role)
@@ -151,15 +152,18 @@ if im:
                     st.error(
                         'Au moins un des KDA est incorrect, veuillez vérifier svp')
             else:
+                st.write(match.list_attributes_values())
                 st.error('Remplissez correctement tous les champs svp')
     if state.pred_blue:
+        st.markdown(
+            '<style>h1{text-align:center}.blue{background-color:#2652bf}.red{background-color:#bf2633}</style', unsafe_allow_html=True)
         if state.pred_blue >= 0.5:
             container.markdown(
-                "## _L'équipe bleue à de plus grandes chances de victoire._"
+                "<h1>L'équipe bleue a de plus grandes chances de victoire.</h1>", unsafe_allow_html=True
             )
         else:
             container.markdown(
-                "## _L'équipe rouge à de plus grandes chances de victoire._"
+                "<h1>L'équipe rouge a de plus grandes chances de victoire.</h1>", unsafe_allow_html=True
             )
 
         size = state.pred_blue > 0.895 and [0.895, 0.105] \
@@ -168,7 +172,9 @@ if im:
 
         blue_col, red_col = container.columns(size)
         with blue_col:
-            st.info(f"# _{round(state.pred_blue * 100, 2)} %_")
+            st.markdown(
+                f"<h1 class=blue>{round(state.pred_blue * 100, 2)} %</h1>", unsafe_allow_html=True)
+            #st.info(f"<h1 style=text-align: center>{round(state.pred_blue * 100, 2)} %_</h1>")
         with red_col:
-            st.error(f"# _{round(100 - state.pred_blue * 100, 2)} %_")
+            st.markdown(f"<h1 class=red>{round(100 - state.pred_blue * 100, 2)} %</h1>", unsafe_allow_html=True)
         st.button("Nouvelle recherche ?", on_click=update_pred)
