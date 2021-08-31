@@ -135,15 +135,20 @@ if im:
     if state.pred_blue:
         if state.pred_blue >= 0.5:
             container.markdown(
-                "_L'équipe bleue à de plus grandes chances de victoire._"
+                "## _L'équipe bleue à de plus grandes chances de victoire._"
             )
         else:
-            container.header(
-                "_L'équipe rouge à de plus grandes chances de victoire._"
+            container.markdown(
+                "## _L'équipe rouge à de plus grandes chances de victoire._"
                 )
-        blue_col, red_col = container.columns([state.pred_blue, 1-state.pred_blue])
+
+        size = state.pred_blue > 0.895 and [0.895, 0.105] \
+            or state.pred_blue < 0.105 and [0.105, 0.895] \
+            or [state.pred_blue, 1-state.pred_blue]
+        
+        blue_col, red_col = container.columns(size)
         with blue_col:
             st.info(f"# _{round(state.pred_blue * 100, 2)} %_")
         with red_col:
-            st.error(f"# _{100 - round(state.pred_blue * 100, 2)} %_")
+            st.error(f"# _{round(100 - state.pred_blue * 100, 2)} %_")
         st.button("Nouvelle recherche ?", on_click=update_pred)
